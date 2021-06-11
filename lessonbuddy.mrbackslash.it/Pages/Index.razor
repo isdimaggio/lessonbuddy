@@ -1,0 +1,190 @@
+﻿@attribute [Authorize]
+@page "/"
+
+@using lessonbuddy.mrbackslash.it.Models
+
+@inject LessonBuddyContext DBContext
+
+@if (authenticationState.User.IsInRole("Administrators"))
+{
+	<h1>Cruscotto amministratore</h1>
+}
+else
+{
+	<h1>Cruscotto utente</h1>
+}
+<br />
+<br />
+
+@if (sessions != null)
+{
+	<DataGrid TItem="Session" Data="@sessions" @bind-SelectedRow="@selectedSession" Editable="true" EditMode="DataGridEditMode.Inline">
+
+		<DataGridCommandColumn TItem="Session" CancelCommandAllowed=@isAdmin EditCommandAllowed="true" DeleteCommandAllowed="false" NewCommandAllowed="false">
+			<EditCommandTemplate>
+				<Button Color="Color.Primary" Clicked="@context.Clicked">Modifica</Button>
+			</EditCommandTemplate>
+			<SaveCommandTemplate>
+				<Button Type="ButtonType.Submit" PreventDefaultOnSubmit Color="Color.Primary" Clicked="@context.Clicked">Salva</Button>
+			</SaveCommandTemplate>
+			<CancelCommandTemplate>
+				<Button Color="Color.Secondary" Clicked="@context.Clicked">Annulla</Button>
+			</CancelCommandTemplate>
+		</DataGridCommandColumn>
+
+		<DataGridColumn TItem="Session" Field="@nameof(Session.Guidsession)" Caption="GUID" Editable="false" Filterable="true" Sortable="false">
+		</DataGridColumn>
+
+		@if (isAdmin)
+		{
+			<DataGridColumn TItem="Session" Field="@nameof(Session.Username)" Caption="Utente" Editable="false" Filterable="true" Sortable="false">
+			</DataGridColumn>
+		}
+
+		<DataGridColumn TItem="Session" Field="@nameof(Session.Subject)" Caption="Soggetto" Editable="false" Filterable="true" Sortable="true">
+		</DataGridColumn>
+
+		<DataGridColumn TItem="Session" Field="@nameof(Session.Location)" Caption="Luogo" Editable="false" Filterable="true" Sortable="true">
+		</DataGridColumn>
+
+		<DataGridColumn TItem="Session" Field="@nameof(Session.SessionDateTime)" Caption="Data/Ora" Editable="false" Filterable="true" Sortable="true">
+		</DataGridColumn>
+
+	</DataGrid>
+
+	<br />
+	<br />
+
+	@if (selectedSession != null)
+	{
+		visibility = Visibility.Visible;
+	}
+	else
+	{
+		visibility = Visibility.Invisible;
+	}
+
+	<LineChart @ref="lineChart" TItem="double" Visibility="@visibility" />
+}
+else
+{
+	<h3>Caricamento in corso...</h3>
+}
+
+@code {
+
+	[CascadingParameter]
+	private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+	private AuthenticationState authenticationState;
+
+	private List<Session> sessions;
+	private Session selectedSession;
+	private Visibility visibility = Visibility.Invisible;
+
+	private bool isAdmin = false;
+
+	private LineChart<double> lineChart;
+
+	protected override async Task OnInitializedAsync()
+	{
+		authenticationState = await AuthenticationStateTask;
+
+		if (authenticationState.User.Identity.IsAuthenticated)
+		{
+			if (authenticationState.User.IsInRole("Administrators"))
+			{
+				isAdmin = true;
+			}
+		}
+
+		if (isAdmin)
+		{
+			sessions = DBContext.Sessions.ToList();
+		}
+		else
+		{
+			sessions = DBContext.Sessions.AsQueryable().Where(s => s.Username == authenticationState.User.Identity.Name).ToList();
+		}
+
+		//foreach (Session session in sessions)
+		//{
+		//	if (!DBContext.Payloads.Where(p => p.Idsession == session.Idsession).Any())
+		//	{
+		//		for (int i = 0; i < 600; i++)
+		//		{
+		//			Payload payload = new Payload();
+
+		//			payload.Idsession = session.Idsession;
+		//			payload.EventTime = DateTime.Now.AddMilliseconds(100 * i);
+		//			payload.ConnectionStrength = (int)(100.0 + 50.0 * Math.Sin((Math.PI / 180.0d) * (360.0d / 600.0d) * ((double)i + 30.0d)));
+		//			payload.AttentionLevel = (int)(100.0 + 50.0 * Math.Sin((Math.PI / 180.0d) * (360.0d / 600.0d) * ((double)i) + 60.0d));
+		//			payload.MeditationLevel = (int)(100.0 + 50.0 * Math.Sin((Math.PI / 180.0d) * (360.0d / 600.0d) * ((double)i + 90.0d)));
+
+		//			DBContext.Payloads.Add(payload);
+		//		}
+
+		//		DBContext.SaveChanges();
+		//	}
+		//}
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (selectedSession != null)
+		{
+			List<Payload> payloads = DBContext.Payloads
+													.Where(p => p.Idsession == selectedSession.Idsession)
+													.OrderBy(p => p.EventTime)
+													.ToList();
+
+			await lineChart.Clear();
+
+			string[] labels = payloads.Select(p => p.EventTime.ToString("HH:mm:ss.f")).Distinct().ToArray();
+			LineChartDataset<double>[] parameters =
+						{
+				new LineChartDataset<double>
+				{
+					Label = "Connessione",
+					Data = payloads.Select(p => (double)p.ConnectionStrength).ToList(),
+					BackgroundColor = ChartColor.FromRgba( 255, 99, 132, 0.2f ),
+					BorderColor = ChartColor.FromRgba( 255, 99, 132, 1f ),
+					Fill = true,
+					PointRadius = 3,
+					BorderWidth = 1,
+					PointBorderColor = ChartColor.FromRgba( 255, 99, 132, 1f ),
+					CubicInterpolationMode = "monotone",
+				},
+				new LineChartDataset<double>
+				{
+					Label = "Attenzione",
+					Data = payloads.Select(p => (double)p.AttentionLevel).ToList(),
+					//BackgroundColor = ChartColor.FromRgba( 54, 162, 235, 0.2f ),
+					BorderColor = ChartColor.FromRgba( 54, 162, 235, 1f ),
+					Fill = true,
+					PointRadius = 3,
+					BorderWidth = 1,
+					PointBorderColor = ChartColor.FromRgba( 54, 162, 235, 1f ),
+					CubicInterpolationMode = "monotone",
+				},
+				new LineChartDataset<double>
+				{
+					Label = "Meditazione",
+					Data = payloads.Select(p => (double)p.MeditationLevel).ToList(),
+					//BackgroundColor = ChartColor.FromRgba( 255, 206, 86, 0.2f ),
+					BorderColor = ChartColor.FromRgba( 255, 206, 86, 1f ),
+					Fill = true,
+					PointRadius = 3,
+					BorderWidth = 1,
+					PointBorderColor = ChartColor.FromRgba( 255, 206, 86, 1f ),
+					CubicInterpolationMode = "monotone",
+				}
+			};
+
+			await lineChart.AddLabelsDatasetsAndUpdate
+			(
+				labels,
+				parameters
+			);
+		}
+	}
+}
