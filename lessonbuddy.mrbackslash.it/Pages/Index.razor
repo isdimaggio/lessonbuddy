@@ -37,17 +37,17 @@ else
 
 		@if (isAdmin)
 		{
-			<DataGridColumn TItem="Session" Field="@nameof(Session.Username)" Caption="Utente" Editable="false" Filterable="true" Sortable="false">
+			<DataGridColumn TItem="Session" Field="@nameof(Session.Username)" Caption="Utente" Editable="true" Filterable="true" Sortable="false">
 			</DataGridColumn>
 		}
 
-		<DataGridColumn TItem="Session" Field="@nameof(Session.Subject)" Caption="Soggetto" Editable="false" Filterable="true" Sortable="true">
+		<DataGridColumn TItem="Session" Field="@nameof(Session.Subject)" Caption="Soggetto" Editable="true" Filterable="true" Sortable="true">
 		</DataGridColumn>
 
-		<DataGridColumn TItem="Session" Field="@nameof(Session.Location)" Caption="Luogo" Editable="false" Filterable="true" Sortable="true">
+		<DataGridColumn TItem="Session" Field="@nameof(Session.Location)" Caption="Luogo" Editable="true" Filterable="true" Sortable="true">
 		</DataGridColumn>
 
-		<DataGridColumn TItem="Session" Field="@nameof(Session.SessionDateTime)" Caption="Data/Ora" Editable="false" Filterable="true" Sortable="true">
+		<DataGridColumn TItem="Session" Field="@nameof(Session.SessionDateTime)" Caption="Data/Ora" Editable="true" Filterable="true" Sortable="true">
 		</DataGridColumn>
 
 	</DataGrid>
