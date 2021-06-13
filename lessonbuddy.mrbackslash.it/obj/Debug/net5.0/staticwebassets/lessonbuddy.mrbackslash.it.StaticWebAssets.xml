@@ -1,8 +1,0 @@
-﻿<StaticWebAssets Version="1.0">
-  <ContentRoot BasePath="/" Path="F:\MRBACKSLASH\lessonbuddy\lessonbuddy.mrbackslash.it\obj\Debug\net5.0\scopedcss\bundle\" />
-  <ContentRoot BasePath="/Identity" Path="C:\Users\VittorioLoMele\.nuget\packages\microsoft.aspnetcore.identity.ui\5.0.10\staticwebassets\V4\" />
-  <ContentRoot BasePath="_content/Blazorise" Path="C:\Users\VittorioLoMele\.nuget\packages\blazorise\0.9.4.4\build\..\staticwebassets\" />
-  <ContentRoot BasePath="_content/Blazorise.Bootstrap" Path="C:\Users\VittorioLoMele\.nuget\packages\blazorise.bootstrap\0.9.4.4\build\..\staticwebassets\" />
-  <ContentRoot BasePath="_content/Blazorise.Charts" Path="C:\Users\VittorioLoMele\.nuget\packages\blazorise.charts\0.9.4.4\build\..\staticwebassets\" />
-  <ContentRoot BasePath="_content/Blazorise.DataGrid" Path="C:\Users\VittorioLoMele\.nuget\packages\blazorise.datagrid\0.9.4.4\build\..\staticwebassets\" />
-</StaticWebAssets>
