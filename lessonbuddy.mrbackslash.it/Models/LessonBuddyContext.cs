@@ -162,11 +162,15 @@ namespace lessonbuddy.mrbackslash.it.Models
                     .HasColumnName("GUIDSession")
                     .HasDefaultValueSql("(newid())");
 
-                entity.Property(e => e.Location).HasMaxLength(255);
+                entity.Property(e => e.Location)
+                    .IsRequired()
+                    .HasMaxLength(255);
 
-                entity.Property(e => e.SessionDateTime).HasColumnType("datetime");
+                entity.Property(e => e.Subject)
+                    .IsRequired()
+                    .HasMaxLength(100);
 
-                entity.Property(e => e.Subject).HasMaxLength(100);
+                entity.Property(e => e.UploadDateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.Username)
                     .IsRequired()

@@ -17,7 +17,7 @@ namespace lessonbuddy.mrbackslash.it.Models
         public string Username { get; set; }
         public string Subject { get; set; }
         public string Location { get; set; }
-        public DateTime? SessionDateTime { get; set; }
+        public DateTime UploadDateTime { get; set; }
 
         public virtual ICollection<Payload> Payloads { get; set; }
     }

@@ -1,12 +1,18 @@
 ﻿<AuthorizeView>
-    <Authorized>
-        <a href="Identity/Account/Manage">Ciao, @context.User.Identity.Name!</a>
-        <form method="post" action="Identity/Account/LogOut">
-            <button type="submit" class="nav-link btn btn-link">Esci</button>
-        </form>
-    </Authorized>
-    <NotAuthorized>
-        <a href="Identity/Account/Register">Registrati</a>
-        <a href="Identity/Account/Login">Accedi</a>
-    </NotAuthorized>
+	<Authorized>
+		<MudNavLink Href="Identity/Account/Manage">Profilo</MudNavLink>
+
+		<div class="mud-nav-item mud-ripple">
+			<form method="post" action="Identity/Account/LogOut" style="width: 100%;">
+				<button type="submit" class="mud-nav-link" style="width: 100%;">
+					<div class="mud-nav-link-text">Logout</div>
+				</button>
+			</form>			
+		</div>
+
+	</Authorized>
+	<NotAuthorized>
+		<MudNavLink Href="Identity/Account/Login">Login</MudNavLink>
+		<MudNavLink Href="Identity/Account/Register">Registrati</MudNavLink>
+	</NotAuthorized>
 </AuthorizeView>

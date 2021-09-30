@@ -1,0 +1,120 @@
+﻿@using lessonbuddy.mrbackslash.it.Entities
+
+<style>
+
+    .mud-chart.mud-chart-legend-bottom {
+        height: calc(100vh - 130px);
+    }
+
+    .mud-dialog .mud-dialog-actions {
+        justify-content: center;
+    }
+
+    .mud-chart-line {
+        stroke-width: 1px;
+    }
+
+    .mud-charts-yaxis text {
+        font-size: 10px;
+    }
+
+    .mud-charts-xaxis text {
+        font-size: 10px;
+    }
+
+</style>
+
+<MudDialog>    
+    <DialogContent>
+
+        @if (Session != null)
+        {
+            <MudText Align="Align.Center">
+                Grafico della sessione <span style="color: #ff4081ff;">@(Session.Guidsession.ToString())</span> relativa al soggetto <span style="color: #ff4081ff;">@(Session.Subject)</span>, acquisita presso <span style="color: #ff4081ff;">@(Session.Location)</span>, in data <span style="color: #ff4081ff;">@(Session.Payloads.OrderBy(p => p.EventTime).First().EventTime.ToString("dd/MM/yyyy"))</span>
+            </MudText>
+        }
+        <br />
+        
+        @if (series != null)
+        {
+            <MudChart
+            ChartType="ChartType.Line"
+            ChartSeries="@series"
+            XAxisLabels="@xAxisLabels"
+            Width="100%"
+            ChartOptions="chartOptions">
+            </MudChart>
+        }
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Close">Chiudi</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public Session Session { get; set; }    
+
+    void Close() => MudDialog.Close(DialogResult.Ok(true));
+
+    List<ChartSeries> series;
+    string[] xAxisLabels;
+    ChartOptions chartOptions;
+
+    protected override void OnParametersSet()
+    {
+        if (Session != null)
+        {
+            series = new List<ChartSeries>()
+            {
+                new ChartSeries()
+                {
+                    Name = "Intensità connessione",
+                    Data = Session.Payloads.OrderBy(p => p.EventTime).Select(p => (double)p.ConnectionStrength).ToArray()
+                },
+                new ChartSeries()
+                {
+                    Name = "Livello di attenzione",
+                    Data = Session.Payloads.OrderBy(p => p.EventTime).Select(p => (double)p.AttentionLevel).ToArray()
+                },
+                new ChartSeries()
+                {
+                    Name = "Livello di meditazione",
+                    Data = Session.Payloads.OrderBy(p => p.EventTime).Select(p => (double)p.MeditationLevel).ToArray()
+                }
+            };
+
+            xAxisLabels = Session.Payloads.OrderBy(p => p.EventTime).Select(p => p.EventTime.ToString("HH:mm:00")).ToArray();
+            string firstLabel = Session.Payloads.OrderBy(p => p.EventTime).First().EventTime.ToString("HH:mm:ss.fff");
+            string lastLabel = Session.Payloads.OrderBy(p => p.EventTime).Last().EventTime.ToString("HH:mm:ss.fff");
+
+            string currentLabel = "";
+
+            for (int i=0; i<xAxisLabels.Length; i++)
+            {
+                if(xAxisLabels[i] == currentLabel)
+                {
+                    xAxisLabels[i] = "";         
+                }
+                else
+                {
+                    currentLabel = xAxisLabels[i];
+
+                    if (i == 0)
+                    {
+                        xAxisLabels[i] = firstLabel;
+                    }                                       
+                }
+
+                if (i == xAxisLabels.Length - 1)
+                {
+                    xAxisLabels[i] = lastLabel;
+                }
+            }
+
+            chartOptions = new ChartOptions();
+            //chartOptions.InterpolationOption = InterpolationOption;
+        }
+    }
+}

@@ -2,19 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <UserSecretsId>aspnet-lessonbuddy.mrbackslash.it-C261397E-4A59-409C-B4D7-77570C005444</UserSecretsId>
+    <UserSecretsId>aspnet-lessonbuddy.mrbackslash.it-BDA09147-DA77-4C10-A0EA-B5802A8B6378</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazorise.Bootstrap" Version="0.9.4.4" />
-    <PackageReference Include="Blazorise.Charts" Version="0.9.4.4" />
-    <PackageReference Include="Blazorise.DataGrid" Version="0.9.4.4" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.4.4" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.10" />
+    <PackageReference Include="MudBlazor" Version="5.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Uploads\" />
   </ItemGroup>
 
 </Project>

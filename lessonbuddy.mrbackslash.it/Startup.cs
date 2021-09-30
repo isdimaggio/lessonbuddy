@@ -1,9 +1,7 @@
-using Blazorise;
-using Blazorise.Bootstrap;
-using Blazorise.Icons.FontAwesome;
 using lessonbuddy.mrbackslash.it.Areas.Identity;
 using lessonbuddy.mrbackslash.it.Data;
 using lessonbuddy.mrbackslash.it.Models;
+using lessonbuddy.mrbackslash.it.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -15,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MudBlazor.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,28 +34,36 @@ namespace lessonbuddy.mrbackslash.it
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddBlazorise(options =>
-            {
-                options.ChangeTextOnKeyPress = true; // optional
-            }).AddBootstrapProviders()
-              .AddFontAwesomeIcons();
+            services.AddMudServices();
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("LessonBuddyDataSourceConnection")));
-            
+            services.AddDbContext<ApplicationDbContext>
+            (
+                options =>
+                    options.UseSqlServer
+                    (
+                        Configuration.GetConnectionString("LessonBuddyDataSourceConnection")
+                    )
+            );
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddDbContext<LessonBuddyContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("LessonBuddyDataSourceConnection")));
+            services.AddDbContext<LessonBuddyContext>
+            (
+                options =>
+                    options.UseSqlServer
+                    (
+                        Configuration.GetConnectionString("LessonBuddyDataSourceConnection")
+                    )
+            );
+
+            services.AddScoped<SessionsService>();
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddSingleton<WeatherForecastService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

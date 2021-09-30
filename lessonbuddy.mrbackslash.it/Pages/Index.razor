@@ -1,9 +1,12 @@
 ﻿@attribute [Authorize]
 @page "/"
+@using lessonbuddy.mrbackslash.it.Entities
+@using lessonbuddy.mrbackslash.it.Services
 
-@using lessonbuddy.mrbackslash.it.Models
+@inject ISnackbar Snackbar
 
-@inject LessonBuddyContext DBContext
+@inject IDialogService dialogService
+@inject SessionsService sessionService
 
 @if (authenticationState.User.IsInRole("Administrators"))
 {
@@ -13,79 +16,164 @@ else
 {
 	<h1>Cruscotto utente</h1>
 }
+
+<style>
+
+    .mud-table-container {
+        height: calc(100vh - 350px);
+    }
+
+</style>
+
+<br />
+<InputFile id="fileInput" OnChange="UploadFiles" hidden accept=".lbd" />
+<MudButton HtmlTag="label"
+           Variant="Variant.Filled"
+           Color="Color.Secondary"
+           StartIcon="@Icons.Filled.CloudUpload"
+           for="fileInput">
+    Carica una nuova sessione
+</MudButton>
 <br />
 <br />
 
-@if (sessions != null)
-{
-	<DataGrid TItem="Session" Data="@sessions" @bind-SelectedRow="@selectedSession" Editable="true" EditMode="DataGridEditMode.Inline">
+<MudTable 
+	Items="@sessions" 
+	Dense="false" 
+	Hover="true" 
+	ReadOnly="false" 
+	CanCancelEdit="true" 
+	Filter="new Func<Session,bool>(FilterFunc)" 
+    @bind-SelectedItem="selectedItem" 
+    SortLabel="Ordina per" 
+    CommitEditTooltip="Salva" 
+    OnCommitEditClick="@(() => SaveSession())"
+    RowEditPreview="BackupItem" 
+    RowEditCancel="ResetItemToOriginalValues"
+    @ref="@sessionDataTable"
+>
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Elenco sessioni caricate</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
 
-		<DataGridCommandColumn TItem="Session" CancelCommandAllowed=@isAdmin EditCommandAllowed="true" DeleteCommandAllowed="false" NewCommandAllowed="false">
-			<EditCommandTemplate>
-				<Button Color="Color.Primary" Clicked="@context.Clicked">Modifica</Button>
-			</EditCommandTemplate>
-			<SaveCommandTemplate>
-				<Button Type="ButtonType.Submit" PreventDefaultOnSubmit Color="Color.Primary" Clicked="@context.Clicked">Salva</Button>
-			</SaveCommandTemplate>
-			<CancelCommandTemplate>
-				<Button Color="Color.Secondary" Clicked="@context.Clicked">Annulla</Button>
-			</CancelCommandTemplate>
-		</DataGridCommandColumn>
+    <ColGroup>
 
-		<DataGridColumn TItem="Session" Field="@nameof(Session.Guidsession)" Caption="GUID" Editable="false" Filterable="true" Sortable="false">
-		</DataGridColumn>
+        @if(isAdmin)
+        {
+            <col style="width:20%;" />
+            <col style="width:20%;" />
+            <col style="width:15%;" />
+            <col style="width:20%" />
+            <col style="width:11%" />
+            <col style="width:14%" />
+        }
+        else
+        {
+            <col style="width:25%;" />
+            <col style="width:20%;" />
+            <col style="width:25%" />
+            <col style="width:16%" />
+            <col style="width:14%" />
+        }
 
-		@if (isAdmin)
-		{
-			<DataGridColumn TItem="Session" Field="@nameof(Session.Username)" Caption="Utente" Editable="true" Filterable="true" Sortable="false">
-			</DataGridColumn>
-		}
+    </ColGroup>
 
-		<DataGridColumn TItem="Session" Field="@nameof(Session.Subject)" Caption="Soggetto" Editable="true" Filterable="true" Sortable="true">
-		</DataGridColumn>
+    <HeaderContent>
+        <MudTh>Identificativo</MudTh>
 
-		<DataGridColumn TItem="Session" Field="@nameof(Session.Location)" Caption="Luogo" Editable="true" Filterable="true" Sortable="true">
-		</DataGridColumn>
+        @if(isAdmin)
+        {
+            <MudTh><MudTableSortLabel SortBy="new Func<Session, object>(x=>x.Username)">Nome utente</MudTableSortLabel></MudTh>
+        }
 
-		<DataGridColumn TItem="Session" Field="@nameof(Session.SessionDateTime)" Caption="Data/Ora" Editable="true" Filterable="true" Sortable="true">
-		</DataGridColumn>
+        <MudTh><MudTableSortLabel SortBy="new Func<Session, object>(x=>x.Subject)">Soggetto</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Session, object>(x=>x.Location)">Luogo</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<Session, object>(x=>x.UploadDateTime)">Data caricamento</MudTableSortLabel></MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
 
-	</DataGrid>
+    <RowTemplate>
+        <MudTd DataLabel="Identificativo">@context.Guidsession</MudTd>
 
-	<br />
-	<br />
+        @if(isAdmin)
+        {
+            <MudTd DataLabel="Nome utente">@context.Username</MudTd>
+        }
 
-	@if (selectedSession != null)
-	{
-		visibility = Visibility.Visible;
-	}
-	else
-	{
-		visibility = Visibility.Invisible;
-	}
+        <MudTd DataLabel="Soggetto">@context.Subject</MudTd>
+        <MudTd DataLabel="Luogo">@context.Location</MudTd>
+        <MudTd DataLabel="Data">@context.UploadDateTime.Value.ToString("dd/MM/yyyy HH:mm:ss")</MudTd>
 
-	<LineChart @ref="lineChart" TItem="double" Visibility="@visibility" />
-}
-else
-{
-	<h3>Caricamento in corso...</h3>
-}
+        <MudTd DataLabel="">
+            <MudFab Color="Color.Tertiary" Icon="@Icons.Material.Filled.AutoGraph" OnClick="@(() => OpenGraphDialog(context))" ></MudFab>
+        </MudTd>
+    </RowTemplate>
+
+    <RowEditingTemplate>
+        <MudTd DataLabel="Identificativo">@context.Guidsession</MudTd>
+
+        @if (isAdmin)
+        {
+            <MudTd DataLabel="Nome utente">
+                <MudTextField @bind-Value="@context.Username" Required />
+            </MudTd>
+        }
+
+        <MudTd DataLabel="Soggetto">
+            <MudTextField @bind-Value="@context.Subject" Required />
+        </MudTd>
+        <MudTd DataLabel="Luogo">
+            <MudTextField @bind-Value="@context.Location" Required />
+        </MudTd>
+        <MudTd DataLabel="Data caricamento">@context.UploadDateTime.Value.ToString("dd/MM/yyyy HH:mm:ss")</MudTd>
+    </RowEditingTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
 
 @code {
 
-	[CascadingParameter]
+    [CascadingParameter]
 	private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 	private AuthenticationState authenticationState;
 
-	private List<Session> sessions;
-	private Session selectedSession;
-	private Visibility visibility = Visibility.Invisible;
+    private MudTable<Session> sessionDataTable;
 
-	private bool isAdmin = false;
+    private List<Session> sessions;
+    private string searchString = "";
 
-	private LineChart<double> lineChart;
+    private Session selectedItem = null;
+    private Session elementBeforeEdit;
 
-	protected override async Task OnInitializedAsync()
+    private DialogOptions graphDialogOptions;
+    private DialogParameters graphDialogParameters;
+
+    private bool isAdmin = false;
+
+    private void OpenGraphDialog(Session session)
+    {
+        graphDialogParameters = new DialogParameters();
+        graphDialogParameters.Add("Session", session);        
+
+        dialogService.Show<GraphDialog>("", graphDialogParameters, graphDialogOptions);
+    }
+
+    protected void LoadSessions()
+    {
+        if (!isAdmin)
+		{
+			sessions = sessionService.GetAll().Where(s => s.Username == authenticationState.User.Identity.Name).ToList();
+		}
+		else
+		{
+			sessions = sessionService.GetAll();
+		}
+    }
+
+    protected override async Task OnInitializedAsync()
 	{
 		authenticationState = await AuthenticationStateTask;
 
@@ -95,96 +183,84 @@ else
 			{
 				isAdmin = true;
 			}
-		}
+        }
 
-		if (isAdmin)
-		{
-			sessions = DBContext.Sessions.ToList();
-		}
-		else
-		{
-			sessions = DBContext.Sessions.AsQueryable().Where(s => s.Username == authenticationState.User.Identity.Name).ToList();
-		}
+        LoadSessions();
 
-		//foreach (Session session in sessions)
-		//{
-		//	if (!DBContext.Payloads.Where(p => p.Idsession == session.Idsession).Any())
-		//	{
-		//		for (int i = 0; i < 600; i++)
-		//		{
-		//			Payload payload = new Payload();
+        graphDialogOptions = new DialogOptions
+        {
+            FullScreen = true,
+            CloseButton = true,
+            DisableBackdropClick = true,
+            NoHeader = true,
+            Position = DialogPosition.Center            
+        };		
+	}	
 
-		//			payload.Idsession = session.Idsession;
-		//			payload.EventTime = DateTime.Now.AddMilliseconds(100 * i);
-		//			payload.ConnectionStrength = (int)(100.0 + 50.0 * Math.Sin((Math.PI / 180.0d) * (360.0d / 600.0d) * ((double)i + 30.0d)));
-		//			payload.AttentionLevel = (int)(100.0 + 50.0 * Math.Sin((Math.PI / 180.0d) * (360.0d / 600.0d) * ((double)i) + 60.0d));
-		//			payload.MeditationLevel = (int)(100.0 + 50.0 * Math.Sin((Math.PI / 180.0d) * (360.0d / 600.0d) * ((double)i + 90.0d)));
+    private void BackupItem(object element)
+    {
+        elementBeforeEdit = new()
+        {            
+            Username = ((Session)element).Username,
+            Subject = ((Session)element).Subject,
+            Location = ((Session)element).Location,
+            UploadDateTime = ((Session)element).UploadDateTime
+        };
+    }
 
-		//			DBContext.Payloads.Add(payload);
-		//		}
+    private void ResetItemToOriginalValues(object element)
+    {
+        ((Session)element).Username = elementBeforeEdit.Username;
+        ((Session)element).Subject = elementBeforeEdit.Subject;
+        ((Session)element).Location = elementBeforeEdit.Location;
+        ((Session)element).UploadDateTime = elementBeforeEdit.UploadDateTime;
+    }
 
-		//		DBContext.SaveChanges();
-		//	}
-		//}
-	}
+	private bool FilterFunc(Session session)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (session.Username.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (session.Subject.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (session.Location.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
 
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if (selectedSession != null)
-		{
-			List<Payload> payloads = DBContext.Payloads
-													.Where(p => p.Idsession == selectedSession.Idsession)
-													.OrderBy(p => p.EventTime)
-													.ToList();
+    private void SaveSession()
+    {
+        sessionService.Update(selectedItem);
+    }
 
-			await lineChart.Clear();
+    IList<IBrowserFile> files = new List<IBrowserFile>();
+    private async Task UploadFiles(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles())
+        {
+            files.Add(file);
+        }
 
-			string[] labels = payloads.Select(p => p.EventTime.ToString("HH:mm:ss.f")).Distinct().ToArray();
-			LineChartDataset<double>[] parameters =
-						{
-				new LineChartDataset<double>
-				{
-					Label = "Connessione",
-					Data = payloads.Select(p => (double)p.ConnectionStrength).ToList(),
-					BackgroundColor = ChartColor.FromRgba( 255, 99, 132, 0.2f ),
-					BorderColor = ChartColor.FromRgba( 255, 99, 132, 1f ),
-					Fill = true,
-					PointRadius = 3,
-					BorderWidth = 1,
-					PointBorderColor = ChartColor.FromRgba( 255, 99, 132, 1f ),
-					CubicInterpolationMode = "monotone",
-				},
-				new LineChartDataset<double>
-				{
-					Label = "Attenzione",
-					Data = payloads.Select(p => (double)p.AttentionLevel).ToList(),
-					//BackgroundColor = ChartColor.FromRgba( 54, 162, 235, 0.2f ),
-					BorderColor = ChartColor.FromRgba( 54, 162, 235, 1f ),
-					Fill = true,
-					PointRadius = 3,
-					BorderWidth = 1,
-					PointBorderColor = ChartColor.FromRgba( 54, 162, 235, 1f ),
-					CubicInterpolationMode = "monotone",
-				},
-				new LineChartDataset<double>
-				{
-					Label = "Meditazione",
-					Data = payloads.Select(p => (double)p.MeditationLevel).ToList(),
-					//BackgroundColor = ChartColor.FromRgba( 255, 206, 86, 0.2f ),
-					BorderColor = ChartColor.FromRgba( 255, 206, 86, 1f ),
-					Fill = true,
-					PointRadius = 3,
-					BorderWidth = 1,
-					PointBorderColor = ChartColor.FromRgba( 255, 206, 86, 1f ),
-					CubicInterpolationMode = "monotone",
-				}
-			};
+        string result = "";
 
-			await lineChart.AddLabelsDatasetsAndUpdate
-			(
-				labels,
-				parameters
-			);
-		}
-	}
+        foreach (var file in files)
+        {
+            result = await sessionService.Upload(file, authenticationState.User.Identity.Name);
+        }
+
+        if(result == "Sessione caricata correttamente")
+        {
+            Snackbar.Add(result, Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add(result, Severity.Error);
+        }
+
+        LoadSessions();
+
+        //await sessionDataTable.ReloadServerData();
+
+    }
 }
