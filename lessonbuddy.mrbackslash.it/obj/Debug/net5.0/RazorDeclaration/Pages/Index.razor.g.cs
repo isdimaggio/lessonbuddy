@@ -119,7 +119,7 @@ using lessonbuddy.mrbackslash.it.Services;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 137 "F:\MRBACKSLASH\lessonbuddy\lessonbuddy.mrbackslash.it\Pages\Index.razor"
+#line 143 "F:\MRBACKSLASH\lessonbuddy\lessonbuddy.mrbackslash.it\Pages\Index.razor"
        
 
     [CascadingParameter]
@@ -133,9 +133,11 @@ using lessonbuddy.mrbackslash.it.Services;
 
     private Session selectedItem = null;
     private Session elementBeforeEdit;
+    private Session elementToDelete;
 
     private DialogOptions graphDialogOptions;
     private DialogParameters graphDialogParameters;
+    private DialogParameters deleteDialogParameters;
 
     private bool isAdmin = false;
 
@@ -145,6 +147,15 @@ using lessonbuddy.mrbackslash.it.Services;
         graphDialogParameters.Add("Session", session);        
 
         dialogService.Show<GraphDialog>("", graphDialogParameters, graphDialogOptions);
+    }
+
+    private void DeleteSessionDialog(Session session)
+    {
+        deleteDialogParameters = new DialogParameters();
+        deleteDialogParameters.Add("Session", session); 
+        deleteDialogParameters.Add("SessionService", sessionService);
+        
+        dialogService.Show<DeleteDialog>("Eliminare la sessione?", deleteDialogParameters);
     }
 
     protected void LoadSessions()

@@ -1,0 +1,25 @@
+﻿@using lessonbuddy.mrbackslash.it.Entities
+@using lessonbuddy.mrbackslash.it.Services
+
+<MudDialog>
+    <DialogContent>
+        La sessione non potrà più essere recuperata!
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="DeleteSessionCancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="DeleteSessionSubmit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code{
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public Session Session { get; set; }
+    [Parameter] public SessionsService SessionService { get; set; }
+
+    void DeleteSessionSubmit(){
+        SessionService.Delete(Session);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+    void DeleteSessionCancel() => MudDialog.Cancel();
+}

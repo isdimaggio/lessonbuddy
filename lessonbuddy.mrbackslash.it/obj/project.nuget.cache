@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "RU9PsRb656X0JVBW/r9fqtwM0wm2F7YaDqrvvkVKz+nWk6FIJPmhw6ffu6SiPCoL0cti0nz8OhwWIV0Tt72SVw==",
+  "dgSpecHash": "yoeTzzQ2Y2OoycWxOvr7saYjnRKGqbxKjJef7kyTg0oa+FMWOGN446c8oa89oXbkPx/3MxWGmCRN16j7sHbk5w==",
   "success": true,
   "projectFilePath": "F:\\MRBACKSLASH\\lessonbuddy\\lessonbuddy.mrbackslash.it\\lessonbuddy.mrbackslash.it.csproj",
   "expectedPackageFiles": [
@@ -119,10 +119,7 @@
     "C:\\Users\\VittorioLoMele\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
     "C:\\Users\\VittorioLoMele\\.nuget\\packages\\system.xml.xmldocument\\4.3.0\\system.xml.xmldocument.4.3.0.nupkg.sha512",
     "C:\\Users\\VittorioLoMele\\.nuget\\packages\\system.xml.xmlserializer\\4.3.0\\system.xml.xmlserializer.4.3.0.nupkg.sha512",
-    "C:\\Users\\VittorioLoMele\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\5.0.9\\microsoft.netcore.app.host.win-x64.5.0.9.nupkg.sha512",
-    "C:\\Users\\VittorioLoMele\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\5.0.0\\microsoft.aspnetcore.app.ref.5.0.0.nupkg.sha512",
-    "C:\\Users\\VittorioLoMele\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\5.0.0\\microsoft.windowsdesktop.app.ref.5.0.0.nupkg.sha512",
-    "C:\\Users\\VittorioLoMele\\.nuget\\packages\\microsoft.netcore.app.ref\\5.0.0\\microsoft.netcore.app.ref.5.0.0.nupkg.sha512"
+    "C:\\Users\\VittorioLoMele\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\5.0.9\\microsoft.netcore.app.host.win-x64.5.0.9.nupkg.sha512"
   ],
   "logs": []
 }

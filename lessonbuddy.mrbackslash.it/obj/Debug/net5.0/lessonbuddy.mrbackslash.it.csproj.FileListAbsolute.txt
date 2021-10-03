@@ -230,3 +230,5 @@ F:\MRBACKSLASH\lessonbuddy\lessonbuddy.mrbackslash.it\obj\Debug\net5.0\lessonbud
 F:\MRBACKSLASH\lessonbuddy\lessonbuddy.mrbackslash.it\obj\Debug\net5.0\ref\lessonbuddy.mrbackslash.it.dll
 F:\MRBACKSLASH\lessonbuddy\lessonbuddy.mrbackslash.it\obj\Debug\net5.0\lessonbuddy.mrbackslash.it.pdb
 F:\MRBACKSLASH\lessonbuddy\lessonbuddy.mrbackslash.it\obj\Debug\net5.0\lessonbuddy.mrbackslash.it.genruntimeconfig.cache
+F:\MRBACKSLASH\lessonbuddy\lessonbuddy.mrbackslash.it\obj\Debug\net5.0\RazorDeclaration\Shared\DeleteDialog.razor.g.cs
+F:\MRBACKSLASH\lessonbuddy\lessonbuddy.mrbackslash.it\obj\Debug\net5.0\Razor\Shared\DeleteDialog.razor.g.cs

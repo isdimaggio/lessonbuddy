@@ -107,8 +107,14 @@ else
         <MudTd DataLabel="Data">@context.UploadDateTime.Value.ToString("dd/MM/yyyy HH:mm:ss")</MudTd>
 
         <MudTd DataLabel="">
-            <MudFab Color="Color.Tertiary" Icon="@Icons.Material.Filled.AutoGraph" OnClick="@(() => OpenGraphDialog(context))" ></MudFab>
+                <MudFab Color="Color.Tertiary" Icon="@Icons.Material.Filled.AutoGraph" OnClick="@(() => OpenGraphDialog(context))" ></MudFab>
+                <span style="color: white;">a</span>
+                @if (isAdmin)
+                {
+                    <MudFab Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => DeleteSessionDialog(context))" ></MudFab>
+                }
         </MudTd>
+        
     </RowTemplate>
 
     <RowEditingTemplate>
@@ -147,9 +153,11 @@ else
 
     private Session selectedItem = null;
     private Session elementBeforeEdit;
+    private Session elementToDelete;
 
     private DialogOptions graphDialogOptions;
     private DialogParameters graphDialogParameters;
+    private DialogParameters deleteDialogParameters;
 
     private bool isAdmin = false;
 
@@ -159,6 +167,15 @@ else
         graphDialogParameters.Add("Session", session);        
 
         dialogService.Show<GraphDialog>("", graphDialogParameters, graphDialogOptions);
+    }
+
+    private void DeleteSessionDialog(Session session)
+    {
+        deleteDialogParameters = new DialogParameters();
+        deleteDialogParameters.Add("Session", session); 
+        deleteDialogParameters.Add("SessionService", sessionService);
+        
+        dialogService.Show<DeleteDialog>("Eliminare la sessione?", deleteDialogParameters);
     }
 
     protected void LoadSessions()
