@@ -108,10 +108,9 @@ else
 
         <MudTd DataLabel="">
                 <MudFab Color="Color.Tertiary" Icon="@Icons.Material.Filled.AutoGraph" OnClick="@(() => OpenGraphDialog(context))" ></MudFab>
-                <span style="color: white;">a</span>
                 @if (isAdmin)
                 {
-                    <MudFab Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => DeleteSessionDialog(context))" ></MudFab>
+                    <MudFab Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => DeleteSessionDialog(context))" style="margin-left: 10px;" ></MudFab>
                 }
         </MudTd>
         
@@ -153,7 +152,6 @@ else
 
     private Session selectedItem = null;
     private Session elementBeforeEdit;
-    private Session elementToDelete;
 
     private DialogOptions graphDialogOptions;
     private DialogParameters graphDialogParameters;
@@ -172,10 +170,24 @@ else
     private void DeleteSessionDialog(Session session)
     {
         deleteDialogParameters = new DialogParameters();
-        deleteDialogParameters.Add("Session", session); 
-        deleteDialogParameters.Add("SessionService", sessionService);
-        
+        deleteDialogParameters.Add("Owner", this); 
+        deleteDialogParameters.Add("Session", session);
+
         dialogService.Show<DeleteDialog>("Eliminare la sessione?", deleteDialogParameters);
+    }
+
+    public void DeleteSession(Session session)
+    {
+        if (sessionService.Delete(session))
+        {
+            Snackbar.Add("Sessione eliminata", Severity.Success);
+            LoadSessions();
+            StateHasChanged();
+        }
+        else
+        {
+            Snackbar.Add("Impossibile eliminare la sezione", Severity.Error);
+        }
     }
 
     protected void LoadSessions()

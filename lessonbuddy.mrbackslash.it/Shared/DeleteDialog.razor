@@ -14,12 +14,12 @@
 @code{
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
+    [Parameter] public Pages.Index Owner { get; set; }
     [Parameter] public Session Session { get; set; }
-    [Parameter] public SessionsService SessionService { get; set; }
 
     void DeleteSessionSubmit(){
-        SessionService.Delete(Session);
         MudDialog.Close(DialogResult.Ok(true));
+        Owner.DeleteSession(Session);
     }
     void DeleteSessionCancel() => MudDialog.Cancel();
 }
