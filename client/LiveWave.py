@@ -33,7 +33,7 @@ class LiveWave:
 		if port == None:
 			platform = sys.platform
 			if platform == "win32":
-				port = "COM7"
+				port = "COM4"
 
 
 		### Serial ##

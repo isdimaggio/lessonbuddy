@@ -13,8 +13,11 @@
   <property name="windowTitle">
    <string>LessonBuddy - Benvenuto</string>
   </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>false</bool>
+  </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QComboBox" name="comboBox">
+   <widget class="QComboBox" name="serialPortsComboBox">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -37,7 +40,7 @@
      <string>PORTA SERIALE:</string>
     </property>
    </widget>
-   <widget class="QProgressBar" name="progressBar">
+   <widget class="QProgressBar" name="signalQualityBar">
     <property name="geometry">
      <rect>
       <x>220</x>
@@ -45,6 +48,9 @@
       <width>241</width>
       <height>23</height>
      </rect>
+    </property>
+    <property name="minimum">
+     <number>0</number>
     </property>
     <property name="maximum">
      <number>200</number>
@@ -67,22 +73,6 @@
     </property>
     <property name="text">
      <string>QUALITÀ SEGNALE:</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>170</y>
-      <width>121</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PACCHETTI VALIDI</string>
-    </property>
-    <property name="checkable">
-     <bool>false</bool>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit">
@@ -131,7 +121,10 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="recStartButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>340</x>
@@ -168,6 +161,35 @@ REGISTRAZIONE</string>
     </property>
     <property name="text">
      <string>LessonBuddy Client v0.1 </string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="attemptConnection">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>170</y>
+      <width>191</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TENTA LA CONNESSIONE</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="connStatusTextBox">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>170</y>
+      <width>201</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Aspettando una connessione...</string>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
