@@ -26,6 +26,8 @@ Il software web consente di salvare le registrazioni dei livelli di attenzione e
 
 ## Crediti
 
+- **LIBRERIA LIVEWAVE**: [GitHub](https://github.com/oskbed/python-ThinkGear-MindWave)
+
 Questo progetto è stato ideato dagli studenti dell'**Istituto Tecnico Luigi di Maggio** di San Giovanni Rotondo (FG) Lo Mele Vittorio (3Ci) e Cusenza Alessio (5Bi) e seguito dai docenti Chiumento Giuseppe e De Bonis Michelangelo.
 
 - **Vittorio Lo Mele**: Fondatore, Client Python, Interfaccia Web, Backend Logic, Database.
