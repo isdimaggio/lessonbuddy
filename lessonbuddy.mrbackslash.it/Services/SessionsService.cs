@@ -239,9 +239,10 @@ namespace lessonbuddy.mrbackslash.it.Services
 
                         File.Delete(path);
                     }
-                    catch
+                    catch(Exception e)
                     {
                         result = "Il contenuto del file non è valido";
+                        Console.WriteLine(e.Message);
                     }
                 }
                 else
