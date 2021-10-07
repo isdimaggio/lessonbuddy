@@ -75,7 +75,7 @@
      <string>QUALITÀ SEGNALE:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="subjectTextBox">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -111,7 +111,7 @@
      <string>LUOGO REGISTRAZIONE: </string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
+   <widget class="QLineEdit" name="locationTextBox">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -121,7 +121,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="recStartButton">
+   <widget class="QPushButton" name="recControlButton">
     <property name="enabled">
      <bool>false</bool>
     </property>
@@ -181,8 +181,8 @@ REGISTRAZIONE</string>
      <rect>
       <x>220</x>
       <y>170</y>
-      <width>201</width>
-      <height>20</height>
+      <width>231</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -192,8 +192,30 @@ REGISTRAZIONE</string>
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QLabel" name="actionLabel">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>310</y>
+      <width>301</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Nessuna azione in corso</string>
+    </property>
+   </widget>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

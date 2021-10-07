@@ -1,0 +1,8 @@
+{
+	"Checksum": "{checksum}",
+	"Session":
+	{
+		"Subject": "{subject}",
+		"Location": "{location}",
+		"Payloads":
+		[
