@@ -11,6 +11,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text.Json;
 using System.Threading.Tasks;
+using lessonbuddy.mrbackslash.it.Parsers;
 
 namespace lessonbuddy.mrbackslash.it.Services
 {
@@ -84,7 +85,7 @@ namespace lessonbuddy.mrbackslash.it.Services
             model.Username = entity.Username;
             model.Subject = entity.Subject;
             model.Location = entity.Location;
-            model.UploadDateTime = entity.UploadDateTime.Value;           
+            model.UploadDateTime = entity.UploadDateTime.Value;
 
             _ = _context.Sessions.Update(model);
             _context.SaveChanges();
@@ -131,7 +132,7 @@ namespace lessonbuddy.mrbackslash.it.Services
             Models.Session model = _context.Sessions.Where(s => s.Idsession == item.Idsession).Single();
 
             _ = _context.Remove(model);
-            return (_context.SaveChanges() == 1);
+            return (_context.SaveChanges() != 0);
         }
 
         public async Task<string> Upload
@@ -174,7 +175,10 @@ namespace lessonbuddy.mrbackslash.it.Services
                                     {
                                         try
                                         {
-                                            Formats.LBDFileContentFormat deserializedLDB = JsonSerializer.Deserialize<Formats.LBDFileContentFormat>(await reader.ReadToEndAsync());
+                                            JsonSerializerOptions options = new JsonSerializerOptions();
+                                            options.Converters.Add(new DateTimeJsonParser());
+
+                                            Formats.LBDFileContentFormat deserializedLDB = JsonSerializer.Deserialize<Formats.LBDFileContentFormat>(await reader.ReadToEndAsync(), options);
 
                                             if (deserializedLDB.Checksum == secretMD5Hash)
                                             {
@@ -239,10 +243,9 @@ namespace lessonbuddy.mrbackslash.it.Services
 
                         File.Delete(path);
                     }
-                    catch(Exception e)
+                    catch
                     {
                         result = "Il contenuto del file non è valido";
-                        Console.WriteLine(e.Message);
                     }
                 }
                 else
