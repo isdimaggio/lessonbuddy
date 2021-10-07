@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets, uic
+from PyQt5.QtWidgets import QMessageBox
 from LiveWave import *
 import serial.tools.list_ports
 import sys
@@ -13,6 +14,14 @@ class Ui(QtWidgets.QMainWindow):
         uic.loadUi('qtWindows/recSettings.ui', self)
         self.show()
         # Serial port loading
+        if len(list(serial.tools.list_ports.comports())) == 0:
+            QMessageBox.critical(
+                self,
+                'LessonBuddy - Errore',
+                "Nessuna porta seriale rilevata. L'applicazione verrà chiusa.",
+                QMessageBox.Ok
+            )
+            exit(-1)
         for p in serial.tools.list_ports.comports():
             self.serialPortsComboBox.addItem(
                 p.name
@@ -34,7 +43,7 @@ class Ui(QtWidgets.QMainWindow):
             )
         )
         self.mw.start()
-        #while True:
+        # while True:
         #    print("Attention: " + str(self.mw.attention))
         #    print("Meditation: " + str(self.mw.meditation))
         #    print("PoorSignal: " + str(self.mw.poor_signal))
@@ -43,15 +52,18 @@ class Ui(QtWidgets.QMainWindow):
         self.updateThread.start()
 
 
-class SignalBarUpdateThread (Thread):
-   def __init__(self, widget, headsetc):
-      Thread.__init__(self)
-      self.widget = widget
-      self.headsetc = headsetc
-   def run(self):
+class SignalBarUpdateThread(Thread):
+    def __init__(self, widget, headsetc):
+        Thread.__init__(self)
+        self.widget = widget
+        self.headsetc = headsetc
+
+    def run(self):
         while True:
             if self.headsetc.attention == 0 and self.headsetc.meditation == 0 and self.headsetc.poor_signal == 0:
                 self.widget.connStatusTextBox.setText("Aspettando pacchetti validi...")
+                self.widget.recStartButton.setEnabled(False)
+                self.widget.signalQualityBar.setValue(0)
             else:
                 self.widget.connStatusTextBox.setText("SIGNAL LOCKED!")
                 self.widget.recStartButton.setEnabled(True)

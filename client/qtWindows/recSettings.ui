@@ -173,7 +173,7 @@ REGISTRAZIONE</string>
      </rect>
     </property>
     <property name="text">
-     <string>TENTA LA CONNESSIONE</string>
+     <string>CONNETTI</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="connStatusTextBox">
