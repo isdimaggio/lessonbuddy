@@ -18,7 +18,7 @@ Il software web consente di salvare le registrazioni dei livelli di attenzione e
 
 - **Vittorio Lo Mele**: [Sito Web](https://vitto.dev), [E-mail](mailto:hi@vitto.dev), [Telegram](https://t.me/mrbackslash_it)
 - **Alessio Cusenza**: [E-mail](mailto:alessiocusenza2@gmail.com), [Telegram](https://t.me/Axel_cus26)
-- **Pio Carriera**: -wip-
+- **Pio Carriera**: [E-mail](mailto:leocarriera93@gmail.com)
 - **IT Luigi Di Maggio**: [Sito Web](https://isdimaggio.it), [E-mail](mailto:fgtf17000v@istruzione.it)
 - **Roberto Milani**: [Sito Web](https://t.me/BerryCave), [E-mail](mailto:roberto@berrycave.tech)
 
